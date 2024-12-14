@@ -45,7 +45,16 @@ const allOrders = async (req, res) => {
 
 // User Order Dara for Frontend
 const userOrders = async (req, res) => {
+    try {
+        const {userId} = req.body;
 
+        const order = await orderModel.find({userId})
+
+        res.json({success: true, order})
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message})
+    }
 }
 
 // Update order status from Admin Panel
