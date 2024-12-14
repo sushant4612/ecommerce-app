@@ -47,7 +47,7 @@ const ShopContextProvider = (props) => {
                 console.log(error);
                 toast.error(error.message)
             }
-        }
+        }        
     }
 
     const getCartCount = () => {
@@ -134,7 +134,7 @@ const ShopContextProvider = (props) => {
 
     useEffect(() => {
         getProductsData()
-    })
+    },[])
 
     useEffect(() => {
         if(!token && localStorage.getItem('token')){
@@ -145,7 +145,7 @@ const ShopContextProvider = (props) => {
     
 
     const value = {
-        products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItem, addToCart, getCartCount, updateQuantity, getCartAmount, navigate, backendUrl,setToken,token
+        products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItem, addToCart, getCartCount, updateQuantity, getCartAmount, navigate, backendUrl,setToken,token, setCartItem
     }
 
     return (
