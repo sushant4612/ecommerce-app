@@ -63,6 +63,16 @@ const PlaceOrder = () => {
             toast.error(res.data.message)
           }
           break;
+        case 'stripe':
+          const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, orderData, {headers: {token}})
+
+          if(responseStripe.data.success){
+            const {session_url} = responseStripe.data
+            window.location.replace(session_url)
+          }else{
+            toast.error(responseStripe.data.message)
+          }
+          break;
         default:
           break;
       }
@@ -93,7 +103,7 @@ const PlaceOrder = () => {
             <input required onChange={onChangeHandler} name='zipcode' value={formData.zipcode} type="number" className='border border-gray-300 rounded py-1.5 px-3.5 w-full' placeholder='Zipcode'/>
             <input required onChange={onChangeHandler} name='country' value={formData.country} type="text" className='border border-gray-300 rounded py-1.5 px-3.5 w-full' placeholder='Country'/>
         </div>
-        <input type="number" className='border border-gray-300 rounded py-1.5 px-3.5 w-full' placeholder='Phone'/>
+        <input required type="number" className='border border-gray-300 rounded py-1.5 px-3.5 w-full' placeholder='Phone'/>
       </div>    
 
         {/* Right Side */}
@@ -121,7 +131,7 @@ const PlaceOrder = () => {
             </div>
 
             <div className='w-full text-end mt-8'>
-              <button onClick={onSubmitHandler} type='submit'  className='bg-black text-white px-16 py-3 text-sm'>PLACE ORDER</button>
+              <button type='submit'  className='bg-black text-white px-16 py-3 text-sm'>PLACE ORDER</button>
             </div>
           </div>
         </div>
