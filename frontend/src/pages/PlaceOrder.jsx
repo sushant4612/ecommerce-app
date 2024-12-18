@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const {navigate, backendUrl, token, cartItem, getCartAmount, setCartItem, getCartItems, delivery_fee, products} = useContext(ShopContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     firstName:'',
     lastName:'',
@@ -38,6 +39,21 @@ const PlaceOrder = () => {
       receipt: order.receipt,
       handler: async (res) => {
         console.log(res);
+        try {
+          console.log(res);
+          const {data} = await axios.post(backendUrl + '/api/order/verifyRazorpay', res, {headers: {token}})
+          
+          console.log(data)
+          if(data.success){
+            console.log("success" + data);
+            
+            navigate('/orders')
+            setCartItem({})
+          }
+        } catch (error) {
+          console.log(error);
+          toast.error(error)
+        }
       }
     }
     const rzp = new window.Razorpay(options)
@@ -46,6 +62,9 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
+    if (isSubmitting) return; // Prevent duplicate submission
+    setIsSubmitting(true);
+
     try {
       console.log(cartItem);
       
@@ -73,8 +92,11 @@ const PlaceOrder = () => {
         // api calls for COD
         case 'cod':
           const res = await axios.post(backendUrl + '/api/order/place', orderData, {headers : {token}})
+          // console.log(res);
+          
           if(res.data.success){
             setCartItem({})
+            
             navigate('/orders')
           }else{
             toast.error(res.data.message)
@@ -103,6 +125,8 @@ const PlaceOrder = () => {
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+    }finally {
+      setIsSubmitting(false); // Reset submission state
     }
   }
 
